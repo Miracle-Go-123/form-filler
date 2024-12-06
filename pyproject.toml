@@ -1,0 +1,28 @@
+[project]
+name = "formfiller"
+version = "0.1.0"
+description = "formfiller using crewAI"
+authors = [
+    { name = "Your Name", email = "you@example.com" },
+]
+requires-python = ">=3.10,<=3.13"
+dependencies = [
+    "crewai[tools]>=0.80.0,<1.0.0",
+    "pypdfform",
+]
+
+[project.scripts]
+formfiller = "formfiller.main:run"
+run_crew = "formfiller.main:run"
+train = "formfiller.main:train"
+replay = "formfiller.main:replay"
+test = "formfiller.main:test"
+
+[build-system]
+requires = [
+    "hatchling",
+]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+pypdfform = { git = "https://github.com/freaksie/PyPDFForm.git" }

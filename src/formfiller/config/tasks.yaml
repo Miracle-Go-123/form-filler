@@ -1,0 +1,28 @@
+form_filling_task:
+  description: >
+    Fill the fields of a given PDF template in JSON format using user-provided answers.
+    Each field in the template has a `description` that explains the purpose of the field.
+    Your task is to:
+    1. Map user answers to the correct fields based on their descriptions.
+    2. Return a JSON object containing only `field_key` and `answer` for fields where an answer exists.
+    3. Leave out fields without relevant user answers.
+    4. Ensure that answers align specifically with the descriptions and do not hallucinate or assume information.
+
+    **User Information**
+    {user_response}
+
+    **Form Fields**
+    {pdf_form_schema}
+
+    *Rules*
+    1) Do not write or assume wrong field names. It should be exactly same as the field_key in the pdf_form_schema.
+    2) Only include fields where answers have been explicitly provided and are relevant to the field’s description.
+
+
+  expected_output: >
+    A JSON object with entries in the format:
+    -"field_key": "field_key_from_pdf_form_schema",
+    -"answer": "user_provided_answer"
+  agent: form_filler
+  # output_json: outputPydantic
+

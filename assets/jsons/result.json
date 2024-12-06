@@ -1,0 +1,146 @@
+[
+  {
+    "question": "What is your first name?",
+    "answer": "Boaz"
+  },
+  {
+    "question": "What is your last name?",
+    "answer": "Bennet"
+  },
+  {
+    "question": "What is your Alien Registration Number (A-Number)?",
+    "answer": "4364654346"
+  },
+  {
+    "question": "Has your name legally changed since the issuance of your Permanent Resident Card?",
+    "answer": "No"
+  },
+  {
+    "question": "Do you have a USCIS Online Account Number?",
+    "answer": "No"
+  },
+  {
+    "question": "What is your mailing address, including street, city, state, and ZIP code?",
+    "answer": "89 west yale loop, Irvine, CA, 92604"
+  },
+  {
+    "question": "Is there a name 'In Care Of' associated with your mailing address?",
+    "answer": "No"
+  },
+  {
+    "question": "What is your apartment or unit number?",
+    "answer": "None"
+  },
+  {
+    "question": "If your physical address is different from your mailing address, what is your physical address, including street, city, state, and ZIP code?",
+    "answer": "Same"
+  },
+  {
+    "question": "What is your date of birth?",
+    "answer": "02/20/1995"
+  },
+  {
+    "question": "In which city or town were you born?",
+    "answer": "Tokyo"
+  },
+  {
+    "question": "In which country were you born?",
+    "answer": "Japan"
+  },
+  {
+    "question": "What is your class of admission?",
+    "answer": "IR6"
+  },
+  {
+    "question": "On what date did you become a lawful permanent resident?",
+    "answer": "02/05/2020"
+  },
+  {
+    "question": "Do you have a U.S. Social Security Number?",
+    "answer": "43534643"
+  },
+  {
+    "question": "What is your gender?",
+    "answer": "Male"
+  },
+  {
+    "question": "What is your height in feet and inches?",
+    "answer": "5 8"
+  },
+  {
+    "question": "What is your weight in pounds?",
+    "answer": "600"
+  },
+  {
+    "question": "What is your eye color?",
+    "answer": "Blue"
+  },
+  {
+    "question": "What is your hair color?",
+    "answer": "Black"
+  },
+  {
+    "question": "What is your ethnicity?",
+    "answer": "Latino"
+  },
+  {
+    "question": "What is your race?",
+    "answer": "White"
+  },
+  {
+    "question": "What is your mother’s first name?",
+    "answer": "Melia"
+  },
+  {
+    "question": "What is your father’s first name?",
+    "answer": "John"
+  },
+  {
+    "question": "What is the expiration date of your current Green Card?",
+    "answer": "03/03/2022"
+  },
+  {
+    "question": "Have you previously applied for Form I-90?",
+    "answer": "No"
+  },
+  {
+    "question": "Have you experienced any issues receiving your Green Card in the past?",
+    "answer": "No"
+  },
+  {
+    "question": "Why are you applying to replace or renew your Green Card?",
+    "answer": "My previous card has been lost, stolen, or destroyed."
+  },
+  {
+    "question": "What is your current status?",
+    "answer": "Lawful Permanent Resident"
+  },
+  {
+    "question": "Have you ever been placed in exclusion, deportation, or removal proceedings or ordered removed from the United States?",
+    "answer": "No"
+  },
+  {
+    "question": "Since becoming a permanent resident, have you ever filed Form I-407 to abandon your lawful permanent resident status?",
+    "answer": "No"
+  },
+  {
+    "question": "Since becoming a permanent resident, have you ever been arrested, detained, charged, or convicted of any crime in the U.S. or abroad?",
+    "answer": "No"
+  },
+  {
+    "question": "Are you willing to attend a biometric services appointment where USCIS will collect your fingerprints, photograph, and signature?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Do you require any accommodations due to disabilities or impairments for your biometrics appointment?",
+    "answer": "No accommodations needed."
+  },
+  {
+    "question": "Please provide your email address.",
+    "answer": "benny@gmail.com"
+  },
+  {
+    "question": "Please provide your phone number.",
+    "answer": "435346466"
+  }
+]
