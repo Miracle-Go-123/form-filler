@@ -29,14 +29,11 @@ class Formfiller():
 		"""
 		Logic for pdf parsing using custom pypdfform
 		"""
-		pdf_form_schema = PdfWrapper(inputs['pdf_form_schema']).schema
+		self.pdf_obj = inputs['pdf_form_schema']
+		pdf_form_schema = PdfWrapper(self.pdf_obj).schema
 		pdf_form_schema_json = json.dumps(pdf_form_schema, indent=4, sort_keys=True)
-		with open("/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/pdf_form_schema.json", "w") as file:
-			file.write(pdf_form_schema_json)
-		with open(inputs['user_response'], "r") as file:
-			user_response = json.load(file)
 		modified_inputs = {
-        "user_response": user_response,
+        "user_response": inputs['user_response'],
         "pdf_form_schema": pdf_form_schema_json,
     	}
 		return modified_inputs
@@ -51,18 +48,19 @@ class Formfiller():
 			output_str = output.to_dict()
 			if output_str is None:
 				return None
-			# Save the json to a file
-			with open("/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/response.json", "w") as file:
-				json.dump(output_str, file, indent=4, sort_keys=True)
 			filled_res = {}
 			for dic in output_str['response']:
 				if dic['answer'] != "":
 					filled_res[dic['field_key']] = dic['answer']
-			filled = PdfWrapper("/Volumes/Drive D/vizafi/python/formfiller/assets/raw_pdfs/i-90.pdf").fill(
+			filled = PdfWrapper(self.pdf_obj).fill(
 				filled_res
 			)
+			return filled
 			with open("/Volumes/Drive D/vizafi/python/formfiller/assets/gen_pdfs/output.pdf", "wb+") as output:
 				output.write(filled.read())
+			# Optional Save the json to a file 
+			with open("/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/response.json", "w") as file:
+				json.dump(output_str, file, indent=4, sort_keys=True)
 			return 'Form filled successfully'
 		
 		except AttributeError as e:

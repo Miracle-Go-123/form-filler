@@ -18,13 +18,16 @@ def run():
     """
     Run the crew.
     """
-    # with open("assets/jsons/pdf_form_schema.json", "r") as file:
-    #     pdf_form_schema = json.load(file)
-    # with open("../assets/jsons/result.json", "r") as file:
-    #     user_response = json.load(file)
+    pdf_path = '/Volumes/Drive D/vizafi/python/formfiller/assets/raw_pdfs/i-90.pdf'
+    with open(pdf_path, "rb") as pdf_file:
+        pdf_binary = pdf_file.read()
+    user_response_path = '/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/result.json'
+    with open(user_response_path, "r") as file:
+        user_response = json.load(file)
+
     inputs = {
-        "user_response": '/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/result.json',
-        "pdf_form_schema": '/Volumes/Drive D/vizafi/python/formfiller/assets/raw_pdfs/i-90.pdf',
+        "user_response": user_response,
+        "pdf_form_schema": pdf_binary,
     }
     Formfiller().crew().kickoff(inputs=inputs)
 
