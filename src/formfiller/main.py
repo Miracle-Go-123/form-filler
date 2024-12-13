@@ -22,11 +22,11 @@ def run():
     #     pdf_form_schema = json.load(file)
     # with open("../assets/jsons/result.json", "r") as file:
     #     user_response = json.load(file)
-    # inputs = {
-    #     "user_response": user_response,
-    #     "pdf_form_schema": pdf_form_schema,
-    # }
-    Formfiller().crew().kickoff()
+    inputs = {
+        "user_response": '/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/result.json',
+        "pdf_form_schema": '/Volumes/Drive D/vizafi/python/formfiller/assets/raw_pdfs/i-90.pdf',
+    }
+    Formfiller().crew().kickoff(inputs=inputs)
 
 
 # def train():

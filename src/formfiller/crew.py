@@ -29,9 +29,11 @@ class Formfiller():
 		"""
 		Logic for pdf parsing using custom pypdfform
 		"""
-		pdf_form_schema = PdfWrapper("/Volumes/Drive D/vizafi/python/formfiller/assets/raw_pdfs/i-90.pdf").schema
+		pdf_form_schema = PdfWrapper(inputs['pdf_form_schema']).schema
 		pdf_form_schema_json = json.dumps(pdf_form_schema, indent=4, sort_keys=True)
-		with open("/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/result.json", "r") as file:
+		with open("/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/pdf_form_schema.json", "w") as file:
+			file.write(pdf_form_schema_json)
+		with open(inputs['user_response'], "r") as file:
 			user_response = json.load(file)
 		modified_inputs = {
         "user_response": user_response,
@@ -50,7 +52,7 @@ class Formfiller():
 			if output_str is None:
 				return None
 			# Save the json to a file
-			with open("/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/response1.json", "w") as file:
+			with open("/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/response.json", "w") as file:
 				json.dump(output_str, file, indent=4, sort_keys=True)
 			filled_res = {}
 			for dic in output_str['response']:
