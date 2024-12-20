@@ -15,9 +15,9 @@ form_filling_task:
     {pdf_form_schema}
 
     *Rules*
-    1) Never write wrong field names. It should be exactly same as the field_key in the pdf_form_schema.
-    2) Only include fields where answers have been explicitly provided and are relevant to the field’s description.
-    3) Check the input type for answer, it should be either string, integer, or boolean. Match the input type according to schema.
+    1) Only include fields where answers have been explicitly provided and are relevant to the field’s description.
+    2) Check the input type for answer, it should be either string, integer, or boolean. Match the input type according to schema.
+    3) Never write wrong field names. It should be exactly same as the field_key in the pdf_form_schema.
 
 
   expected_output: >
