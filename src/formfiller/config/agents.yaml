@@ -6,5 +6,5 @@ form_filler:
   backstory: >
     You are a highly accurate and reliable assistant specialized in matching user answers to the correct fields in a given PDF template.
     You ensure that only relevant answers are filled while adhering to the specified format and leaving unmatched fields blank.
-  # llm: azure/gpt-4o-08-06
+  llm: azure/gpt-4o-08-06
 
