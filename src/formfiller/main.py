@@ -1,69 +1,28 @@
 #!/usr/bin/env python
 import sys
-import warnings
-
 from formfiller.crew import Formfiller
 import json
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import Dict, Any
 
-warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
+app = FastAPI()
 
-# This main file is intended to be a way for you to run your
-# crew locally, so refrain from adding unnecessary logic into this file.
-# Replace with inputs you want to test with, it will automatically
-# interpolate any tasks and agents information
-# read the user response json
+class InputData(BaseModel):
+    pdf_form_schema: str
+    user_response: Dict[str, Any]
 
+@app.post("/kickoff")
+async def kickoff(input_data: InputData):
+    try:
+        formfiller = Formfiller()
+        modified_inputs = formfiller.parse_pdf(input_data.dict())
+        output = formfiller.crew().kickoff(modified_inputs)
+        result = formfiller.fill_pdf(output)
+        return {"message": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-def run():
-    """
-    Run the crew.
-    """
-    pdf_path = '/Volumes/Drive D/vizafi/python/formfiller/assets/raw_pdfs/i-90.pdf'
-    with open(pdf_path, "rb") as pdf_file:
-        pdf_binary = pdf_file.read()
-    user_response_path = '/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/result.json'
-    with open(user_response_path, "r") as file:
-        user_response = json.load(file)
-
-    inputs = {
-        "user_response": user_response,
-        "pdf_form_schema": pdf_binary,
-    }
-    Formfiller().crew().kickoff(inputs=inputs)
-
-
-# def train():
-#     """
-#     Train the crew for a given number of iterations.
-#     """
-#     inputs = {
-#         "topic": "AI LLMs"
-#     }
-#     try:
-#         Formfiller().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
-
-#     except Exception as e:
-#         raise Exception(f"An error occurred while training the crew: {e}")
-
-# def replay():
-#     """
-#     Replay the crew execution from a specific task.
-#     """
-#     try:
-#         Formfiller().crew().replay(task_id=sys.argv[1])
-
-#     except Exception as e:
-#         raise Exception(f"An error occurred while replaying the crew: {e}")
-
-# def test():
-#     """
-#     Test the crew execution and returns the results.
-#     """
-#     inputs = {
-#         "topic": "AI LLMs"
-#     }
-#     try:
-#         Formfiller().crew().test(n_iterations=int(sys.argv[1]), openai_model_name=sys.argv[2], inputs=inputs)
-
-#     except Exception as e:
-#         raise Exception(f"An error occurred while replaying the crew: {e}")
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
