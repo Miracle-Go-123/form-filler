@@ -8,11 +8,11 @@ form_filling_task:
     3. Leave out fields without relevant user answers.
     4. Ensure that answers align specifically with the descriptions and do not hallucinate or assume information.
 
-    **User Information**
-    {user_response}
-
     **Form Fields**
     {pdf_form_schema}
+
+    **User Information**
+    {user_response}
 
     *Rules*
     1) Only include fields where answers have been explicitly provided and are relevant to the field’s description.

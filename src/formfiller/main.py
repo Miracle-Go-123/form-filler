@@ -1,13 +1,15 @@
 #!/usr/bin/env python
-import sys
+import os
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task, before_kickoff, after_kickoff
 from PyPDFForm import PdfWrapper
 import json
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List, Union, Dict, Any
-
+from typing import List, Union
+from dotenv import load_dotenv
+from langchain_openai import AzureChatOpenAI
+import base64
 
 
 class Pydantic(BaseModel):
@@ -22,13 +24,22 @@ class Formfiller():
 
 	agents_config = 'config/agents.yaml'
 	tasks_config = 'config/tasks.yaml'
+	load_dotenv()
+
+	azure_llm = AzureChatOpenAI(
+		azure_endpoint=os.environ.get("AZURE_API_BASE"),
+		api_key=os.environ.get("AZURE_API_KEY"),
+		model=os.environ.get("model"),
+		api_version=os.environ.get("AZURE_API_VERSION"),
+		
+	)
 
 	@before_kickoff # Optional hook to be executed before the crew starts
 	def parse_pdf(self, inputs):
 		"""
 		Logic for pdf parsing using custom pypdfform
 		"""
-		self.pdf_obj = inputs['pdf_form_schema']
+		self.pdf_obj = base64.b64decode(inputs['pdf_form_schema'])
 		pdf_form_schema = PdfWrapper(self.pdf_obj).schema
 		pdf_form_schema_json = json.dumps(pdf_form_schema, indent=4, sort_keys=True)
 		modified_inputs = {
@@ -51,14 +62,12 @@ class Formfiller():
 			for dic in output_str['response']:
 				if dic['answer'] != "":
 					filled_res[dic['field_key']] = dic['answer']
-			filled = PdfWrapper(self.pdf_obj).fill(
-				filled_res
-			)
+			filled = PdfWrapper(self.pdf_obj).fill(filled_res)
 			# return filled
-			with open("/Volumes/Drive D/vizafi/python/formfiller/assets/gen_pdfs/output.pdf", "wb+") as output:
+			with open("/Volumes/Drive D/vizafi/python/formfiller_api/assets/gen_pdfs/output.pdf", "wb+") as output:
 				output.write(filled.read())
 			# Optional Save the json to a file 
-			with open("/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/response.json", "w") as file:
+			with open("/Volumes/Drive D/vizafi/python/formfiller_api/assets/jsons/response.json", "w") as file:
 				json.dump(output_str, file, indent=4, sort_keys=True)
 			return 'Form filled successfully'
 		
@@ -104,9 +113,9 @@ class InputData(BaseModel):
 async def kickoff(input_data: InputData):
     try:
         formfiller = Formfiller()
-        modified_inputs = formfiller.parse_pdf(input_data.dict())
-        output = formfiller.crew().kickoff(modified_inputs)
-        result = formfiller.fill_pdf(output)
-        return {"message": result}
+        # modified_inputs = formfiller.parse_pdf(input_data.dict())
+        output = formfiller.crew().kickoff(inputs=input_data.dict())
+        # result = formfiller.fill_pdf(output)
+        return {"message": output}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

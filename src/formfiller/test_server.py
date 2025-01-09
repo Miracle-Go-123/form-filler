@@ -4,10 +4,10 @@ import base64
 
 
 if __name__ == "__main__":
-    pdf_path = '/Volumes/Drive D/vizafi/python/formfiller/assets/raw_pdfs/i-90.pdf'
+    pdf_path = '/Volumes/Drive D/vizafi/python/formfiller_api/assets/raw_pdfs/i-90.pdf'
     with open(pdf_path, "rb") as pdf_file:
         pdf_binary = pdf_file.read()
-    user_response_path = '/Volumes/Drive D/vizafi/python/formfiller/assets/jsons/result.json'
+    user_response_path = '/Volumes/Drive D/vizafi/python/formfiller_api/assets/jsons/result.json'
     with open(user_response_path, "r") as file:
         user_response = json.load(file)
     inputs = {
