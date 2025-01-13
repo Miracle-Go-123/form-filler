@@ -4,12 +4,13 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task, before_kickoff, after_kickoff
 from PyPDFForm import PdfWrapper
 import json
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from typing import List, Union
 from dotenv import load_dotenv
 from langchain_openai import AzureChatOpenAI
 import base64
+from uuid import uuid4
 
 
 class Pydantic(BaseModel):
@@ -109,13 +110,27 @@ class InputData(BaseModel):
     pdf_form_schema: str
     user_response: List[UserResponseItem]
 
-@app.post("/kickoff")
-async def kickoff(input_data: InputData):
+def run_kickoff(input_data: InputData, job_id: str):
     try:
         formfiller = Formfiller()
-        # modified_inputs = formfiller.parse_pdf(input_data.dict())
-        output = formfiller.crew().kickoff(inputs=input_data.dict())
-        # result = formfiller.fill_pdf(output)
-        return {"message": output}
+        output = formfiller.crew().kickoff(input_data.dict())
+        print(f"Job {job_id} completed successfully")
+    except Exception as e:
+        print(f"Job {job_id} failed with error: {e}")
+
+@app.post("/kickoff")
+async def kickoff(input_data: InputData, background_tasks: BackgroundTasks):
+    try:
+        job_id = str(uuid4())
+        background_tasks.add_task(run_kickoff, input_data, job_id)
+        return {"job_id": job_id, "message": "Job started"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/status/{job_id}")
+async def get_status(job_id: str):
+    try:
+        # Here you would typically check the status of the job using the job_id
+        return {"status": "Job status for job_id: " + job_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
