@@ -1,106 +1,12 @@
 #!/usr/bin/env python
-import os
-from crewai import Agent, Crew, Process, Task
-from crewai.project import CrewBase, agent, crew, task, before_kickoff, after_kickoff
-from PyPDFForm import PdfWrapper
-import json
+
+from crew import Formfiller
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel
-from typing import List, Union
-from dotenv import load_dotenv
-from langchain_openai import AzureChatOpenAI
-import base64
+from typing import List, Union, Optional, Dict
 from uuid import uuid4
+from enum import StrEnum
 
-
-class Pydantic(BaseModel):
-   field_key : str
-   answer : Union[str, int, bool]
-
-class outputPydantic(BaseModel):
-	response: List[Pydantic]
-@CrewBase
-class Formfiller():
-	"""Formfiller crew"""
-
-	agents_config = 'config/agents.yaml'
-	tasks_config = 'config/tasks.yaml'
-	load_dotenv()
-
-	azure_llm = AzureChatOpenAI(
-		azure_endpoint=os.environ.get("AZURE_API_BASE"),
-		api_key=os.environ.get("AZURE_API_KEY"),
-		model=os.environ.get("model"),
-		api_version=os.environ.get("AZURE_API_VERSION"),
-		
-	)
-
-	@before_kickoff # Optional hook to be executed before the crew starts
-	def parse_pdf(self, inputs):
-		"""
-		Logic for pdf parsing using custom pypdfform
-		"""
-		self.pdf_obj = base64.b64decode(inputs['pdf_form_schema'])
-		pdf_form_schema = PdfWrapper(self.pdf_obj).schema
-		pdf_form_schema_json = json.dumps(pdf_form_schema, indent=4, sort_keys=True)
-		modified_inputs = {
-        "user_response": inputs['user_response'],
-        "pdf_form_schema": pdf_form_schema_json,
-    	}
-		return modified_inputs
-
-	@after_kickoff # Optional hook to be executed after the crew has finished
-	def fill_pdf(self, output):
-		"""
-		Logic to validate and process the output JSON
-		"""
-		try:
-			# Convert CrewOutput to JSON string
-			output_str = output.to_dict()
-			if output_str is None:
-				return None
-			filled_res = {}
-			for dic in output_str['response']:
-				if dic['answer'] != "":
-					filled_res[dic['field_key']] = dic['answer']
-			filled = PdfWrapper(self.pdf_obj).fill(filled_res)
-			# return filled
-			with open("/Volumes/Drive D/vizafi/python/formfiller_api/assets/gen_pdfs/output.pdf", "wb+") as output:
-				output.write(filled.read())
-			# Optional Save the json to a file 
-			with open("/Volumes/Drive D/vizafi/python/formfiller_api/assets/jsons/response.json", "w") as file:
-				json.dump(output_str, file, indent=4, sort_keys=True)
-			return 'Form filled successfully'
-		
-		except AttributeError as e:
-			print(f"Error converting CrewOutput to JSON: {e}")
-			return None
-	@agent
-	def form_filler(self) -> Agent:
-		return Agent(
-			config=self.agents_config['form_filler'],
-			# tools=[MyCustomTool()], # Example of custom tool, loaded on the beginning of file
-			verbose=True
-		)
-	@task
-	def form_filling_task(self) -> Task:
-		config=self.tasks_config['form_filling_task']
-		config['output_json'] = outputPydantic
-		return Task(
-			config=config,
-		)
-
-	@crew
-	def crew(self) -> Crew:
-		"""Creates the Formfiller crew"""
-		return Crew(
-			agents=self.agents, # Automatically created by the @agent decorator
-			tasks=self.tasks, # Automatically created by the @task decorator
-			process=Process.sequential,
-			verbose=False,
-			# process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
-		)
-app = FastAPI()
 
 class UserResponseItem(BaseModel):
     question: str
@@ -110,19 +16,33 @@ class InputData(BaseModel):
     pdf_form_schema: str
     user_response: List[UserResponseItem]
 
+class Status(StrEnum):
+    RUNNING='running'
+    FINISHED='finished'
+    FAILED='failed'
+
+class CrewItem(BaseModel):
+    status: Status
+    output: Optional[str] = None
+    error: Optional[str] = None
+
+store: Dict[str, CrewItem] = {}
+app = FastAPI()
+
 def run_kickoff(input_data: InputData, job_id: str):
     try:
         formfiller = Formfiller()
         output = formfiller.crew().kickoff(input_data.dict())
-        print(f"Job {job_id} completed successfully")
+        store[job_id] = CrewItem(status=Status.FINISHED, output=output)
     except Exception as e:
-        print(f"Job {job_id} failed with error: {e}")
+        store[job_id] = CrewItem(status=Status.FAILED, error=str(e))
 
 @app.post("/kickoff")
 async def kickoff(input_data: InputData, background_tasks: BackgroundTasks):
     try:
         job_id = str(uuid4())
         background_tasks.add_task(run_kickoff, input_data, job_id)
+        store[job_id] = CrewItem(status=Status.RUNNING)
         return {"job_id": job_id, "message": "Job started"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -130,7 +50,9 @@ async def kickoff(input_data: InputData, background_tasks: BackgroundTasks):
 @app.get("/status/{job_id}")
 async def get_status(job_id: str):
     try:
-        # Here you would typically check the status of the job using the job_id
-        return {"status": "Job status for job_id: " + job_id}
+        if job_id not in store:
+            raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+        else:
+            return store[job_id]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

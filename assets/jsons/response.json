@@ -1,12 +1,48 @@
 {
     "response": [
         {
-            "answer": "Japan",
-            "field_key": "P1_Line11_CountryofBirth[0]"
+            "answer": "Bennet",
+            "field_key": "P1_Line3a_FamilyName[0]"
+        },
+        {
+            "answer": "Boaz",
+            "field_key": "P1_Line3b_GivenName[0]"
+        },
+        {
+            "answer": "4364654346",
+            "field_key": "P1_Line1_AlienNumber[0]"
+        },
+        {
+            "answer": true,
+            "field_key": "P1_checkbox4[1]"
+        },
+        {
+            "answer": "89 west yale loop",
+            "field_key": "P1_Line6b_StreetNumberName[0]"
+        },
+        {
+            "answer": "Irvine",
+            "field_key": "P1_Line6d_CityOrTown[0]"
+        },
+        {
+            "answer": 5,
+            "field_key": "P1_Line6e_State[0]"
+        },
+        {
+            "answer": "92604",
+            "field_key": "P1_Line6f_ZipCode[0]"
+        },
+        {
+            "answer": "02/20/1995",
+            "field_key": "P1_Line9_DateOfBirth[0]"
         },
         {
             "answer": "Tokyo",
             "field_key": "P1_Line10_CityTownOfBirth[0]"
+        },
+        {
+            "answer": "Japan",
+            "field_key": "P1_Line11_CountryofBirth[0]"
         },
         {
             "answer": "Melia",
@@ -29,48 +65,8 @@
             "field_key": "P1_Line16_SSN[0]"
         },
         {
-            "answer": "436465434",
-            "field_key": "P1_Line1_AlienNumber[0]"
-        },
-        {
-            "answer": "Bennet",
-            "field_key": "P1_Line3a_FamilyName[0]"
-        },
-        {
-            "answer": "Boaz",
-            "field_key": "P1_Line3b_GivenName[0]"
-        },
-        {
-            "answer": "89 west yale loop",
-            "field_key": "P1_Line6b_StreetNumberName[0]"
-        },
-        {
-            "answer": "Irvine",
-            "field_key": "P1_Line6d_CityOrTown[0]"
-        },
-        {
-            "answer": "92604",
-            "field_key": "P1_Line6f_ZipCode[0]"
-        },
-        {
             "answer": true,
             "field_key": "P1_Line8_male[0]"
-        },
-        {
-            "answer": "02/20/1995",
-            "field_key": "P1_Line9_DateOfBirth[0]"
-        },
-        {
-            "answer": true,
-            "field_key": "P1_checkbox4[1]"
-        },
-        {
-            "answer": true,
-            "field_key": "P2_checkbox1[0]"
-        },
-        {
-            "answer": true,
-            "field_key": "P2_checkbox2[5]"
         },
         {
             "answer": 5,
@@ -115,6 +111,14 @@
         {
             "answer": "435346466",
             "field_key": "P5_Line3_DaytimePhoneNumber[0]"
+        },
+        {
+            "answer": true,
+            "field_key": "P2_checkbox2[5]"
+        },
+        {
+            "answer": true,
+            "field_key": "P2_checkbox1[0]"
         },
         {
             "answer": true,

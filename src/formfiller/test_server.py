@@ -1,6 +1,7 @@
 import requests
 import json
 import base64
+from time import sleep
 
 if __name__ == "__main__":
     pdf_path = '/Volumes/Drive D/vizafi/python/formfiller_api/assets/raw_pdfs/i-90.pdf'
@@ -23,7 +24,12 @@ if __name__ == "__main__":
     job_id = kickoff_response.get("job_id")
     if job_id:
         # Make the status request using the job_id
-        status_response = requests.get(f'http://localhost:8000/status/{job_id}')
-        print("Status response:", status_response.json())
+        while True:
+            status_response = requests.get(f'http://localhost:8000/status/{job_id}')
+            print("Status response:", status_response.json())
+            status = status_response.json().get("status")
+            if status == "finished":
+                break
+            sleep(5)
     else:
         print("No job_id returned from kickoff")
