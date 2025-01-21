@@ -67,13 +67,15 @@ class Formfiller():
 				if dic['answer'] != "":
 					filled_res[dic['field_key']] = dic['answer']
 			filled = PdfWrapper(self.pdf_obj).fill(filled_res)
+			filled_pdf_binary = filled.read()
+			filled_pdf_base64 = base64.b64encode(filled_pdf_binary).decode("utf-8")
 			# return filled
 			with open("/Volumes/Drive D/vizafi/python/formfiller_api/assets/gen_pdfs/output.pdf", "wb+") as output:
 				output.write(filled.read())
 			# Optional Save the json to a file 
 			with open("/Volumes/Drive D/vizafi/python/formfiller_api/assets/jsons/response.json", "w") as file:
 				json.dump(output_str, file, indent=4, sort_keys=True)
-			return 'Form filled successfully'
+			return {"message": "Form filled successfully", "filled_pdf_base64": filled_pdf_base64}
 		
 		except AttributeError as e:
 			print(f"Error converting CrewOutput to JSON: {e}")
