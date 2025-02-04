@@ -55,12 +55,14 @@ async def get_frontend():
 
 @app.post("/upload")
 async def upload_files(
-    pdf_file: UploadFile, json_file: UploadFile, background_tasks: BackgroundTasks
+    background_tasks: BackgroundTasks,
+    pdf_file: UploadFile,
+    json_data: str = Form(...)
 ):
     try:
         # Read PDF and JSON
         pdf_binary = await pdf_file.read()
-        user_response = json.loads(await json_file.read())
+        user_response = json.loads(json_data)
         pdf_base64 = base64.b64encode(pdf_binary).decode("utf-8")
         
         # Prepare input data
