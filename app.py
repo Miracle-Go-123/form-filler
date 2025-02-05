@@ -10,7 +10,7 @@ import base64
 import json
 from pathlib import Path
 from crew import Formfiller
-
+from auth import APIKeyMiddleware
 
 # Models
 class UserResponseItem(BaseModel):
@@ -35,6 +35,7 @@ store: Dict[str, CrewItem] = {}
 
 # FastAPI app
 app = FastAPI()
+app.add_middleware(APIKeyMiddleware)
 
 # Serve static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
