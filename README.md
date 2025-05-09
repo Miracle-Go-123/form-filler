@@ -30,91 +30,66 @@ Form Filler is a Python-based application designed to automate the process of fi
    ```bash
    pip install -r requirements.txt
    ```
+5. Set up environment variables
+   - Create a .env file in the root directory (already included in the project:env-sample).
+   - Update the values for AZURE_API_KEY, AZURE_API_BASE, and NEXT_API_KEY as needed.
 
 ## Usage
 
-1. Configure your form settings in the `config.json` file.
-2. Run the application:
+1. Start the FastAPI server:
    ```bash
-   npm start
+   uvicorn app:app --reload
    ```
-3. Follow the prompts to fill out and submit forms.
+2. Open your browser and navigate to:
+
+   ```bash
+    http://127.0.0.1:8000/
+   ```
+
+3. Upload a PDF template and provide JSON data to fill the form.
+4. Check the status of the job and download the filled PDF.
 
 ## API Endpoints
 
-If using the API mode, the following endpoints are available:
+### `GET /`
 
-- **POST /api/fillForm**: Submit form data.
+Serves the frontend HTML page.
 
-  - **Request Body**:
-    ```json
-    {
-      "formId": "string",
-      "fields": {
-        "fieldName": "value"
-      }
-    }
-    ```
-  - **Response**:
-    ```json
-    {
-      "status": "success",
-      "message": "Form submitted successfully."
-    }
-    ```
+### `POST /upload`
 
-- **GET /api/forms**: Retrieve a list of available forms.
-  - **Response**:
-    ```json
-    [
-      {
-        "formId": "string",
-        "formName": "string"
-      }
-    ]
-    ```
+Uploads a PDF file and JSON data to start the form-filling process.
 
-## Configuration
+#### Request Parameters:
 
-The `config.json` file allows you to customize the behavior of FormFiller. Below is an example configuration:
+- `pdf_file`: The PDF template file.
+- `json_data`: JSON string containing user responses.
 
-```json
-{
-  "apiMode": true,
-  "defaultFormId": "12345",
-  "retryAttempts": 3,
-  "timeout": 5000
-}
-```
+#### Response:
 
-- **apiMode**: Enable or disable API mode.
-- **defaultFormId**: Specify a default form ID to use.
-- **retryAttempts**: Number of retry attempts for failed submissions.
-- **timeout**: Timeout duration (in milliseconds) for API requests.
+- `job_id`: Unique identifier for the form-filling job.
+
+### `GET /status/{job_id}`
+
+Checks the status of a form-filling job.
+
+#### Response:
+
+- `status`: Job status (`running`, `finished`, or `failed`).
+- `output`: Base64-encoded filled PDF (if finished).
+- `error`: Error message (if failed).
+
+## Environment Variables
+
+- `AZURE_API_KEY`: API key for Azure OpenAI.
+- `AZURE_API_BASE`: Base URL for Azure OpenAI.
+- `AZURE_API_VERSION`: API version for Azure OpenAI.
+- `NEXT_API_KEY`: API key for authentication.
 
 ## Dependencies
 
-FormFiller relies on the following dependencies:
-
-- **Node.js**: Runtime environment for executing JavaScript code.
-- **Express**: Web framework for building API endpoints.
-- **Axios**: HTTP client for making API requests.
-- **Joi**: Schema validation for form inputs.
-
-Install all dependencies using:
-
-```bash
-npm install
-```
-
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request with your changes.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
-## Contact
-
-For questions or support, please contact [MiracleGo123](mailto:support@miraclego123.com).
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [PyPDF](https://pypdf.readthedocs.io/)
+- [CrewAI](https://docs.crewai.com/)
+- [Pillow](https://python-pillow.org/)
+- [ReportLab](https://www.reportlab.com/)
+- [Python-Dotenv](https://pypi.org/project/python-dotenv/)
